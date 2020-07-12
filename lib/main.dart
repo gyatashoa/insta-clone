@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:social_media_app/index.dart';
+import 'package:social_media_app/providers/switchSplashProvider.dart';
 import 'package:social_media_app/providers/tabProvider.dart';
+import 'package:social_media_app/screens/splash.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,7 +14,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context)=>TabProvider())
+        ChangeNotifierProvider(create: (context) => SwitchToHomeProvider()),
+        ChangeNotifierProvider(create: (context) => TabProvider())
       ],
       builder: (context, widget) => MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -21,7 +24,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.grey,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: MyHomePage(),
+        home: SplashScreen(),
       ),
     );
   }
