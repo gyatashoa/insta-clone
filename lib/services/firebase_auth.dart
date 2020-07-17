@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:social_media_app/databases/tempData.dart';
 
 class FirebaseAuthServices {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -13,5 +14,9 @@ class FirebaseAuthServices {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> logout() async {
+    await _auth.signOut().catchError((err) => print(err));
   }
 }

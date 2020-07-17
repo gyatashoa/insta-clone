@@ -5,8 +5,13 @@ import 'package:social_media_app/config/colors.dart';
 class ActivityScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
+    return Column(
+      children: <Widget>[
+        ActivityScreenAppBar(),
+        Container(
+          
+        ),
+      ],
     );
   }
 }

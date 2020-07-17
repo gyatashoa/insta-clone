@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:social_media_app/index.dart';
+import 'package:social_media_app/providers/profile_provider.dart';
 import 'package:social_media_app/providers/switchSplashProvider.dart';
 import 'package:social_media_app/providers/tabProvider.dart';
 import 'package:social_media_app/screens/splash.dart';
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context)=>ProfileProvider()),
         ChangeNotifierProvider(create: (context) => SwitchToHomeProvider()),
         ChangeNotifierProvider(create: (context) => TabProvider())
       ],

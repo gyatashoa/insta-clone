@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_media_app/config/colors.dart';
+import 'package:social_media_app/databases/tempData.dart';
 import 'package:social_media_app/index.dart';
 import 'package:social_media_app/screens/login.dart';
 import 'package:social_media_app/services/firebase_auth.dart';
@@ -16,17 +17,21 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final String instaLogoPath = "asset/images/insta_logo.png";
   FirebaseAuth _authInstance = FirebaseAuth.instance;
+  FirebaseUser _user;
+  FirebaseUser getFirebaseUser() => _user;
   @override
-  void initState(){
-    print(_authInstance.currentUser());
+  void initState() {
+    //   print(_authInstance.currentUser().then((value) => print(value.uid)));
     super.initState();
-    Timer(Duration(seconds: 3), _navigate);
+    Timer(Duration(seconds: 2), _navigate);
   }
 
-  void _navigate() {
-    _authInstance.currentUser != null
-        ? Navigator.pushReplacement(
-            context, CupertinoPageRoute(builder: (context) => MyHomePage()))
+  void _navigate() async {
+    var tempData = TempData();
+    await tempData.getUser();
+    TempData.firebaseUser != null
+        ? Navigator.pushReplacement(context,
+            CupertinoPageRoute(builder: (context) => MyHomePage(user: _user)))
         : Navigator.pushReplacement(
             context, CupertinoPageRoute(builder: (context) => LoginPage()));
   }

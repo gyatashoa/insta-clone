@@ -9,19 +9,26 @@ import 'dart:math' as math;
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          StatusSection(),
-          Divider(
-            thickness: 1.5,
-            color: Colors.black.withOpacity(0.1),
+    return Column(
+      children: <Widget>[
+        HomeScreenAppBar(),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                StatusSection(),
+                Divider(
+                  thickness: 1.5,
+                  color: Colors.black.withOpacity(0.1),
+                ),
+                Column(
+                  children: <Widget>[PostCard(), PostCard()],
+                )
+              ],
+            ),
           ),
-          Column(
-            children: <Widget>[PostCard(), PostCard()],
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -150,7 +157,7 @@ class Status extends StatelessWidget {
 class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String time = "15 hours ago" ;
+    String time = "15 hours ago";
     int commentNumber = 40;
     String user = "cristiano";
     String postMessage = "Feels good to be back!!!";
@@ -223,7 +230,7 @@ class PostCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left:15,right: 15,top: 10),
+            padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
             child: InkWell(
               child: Align(
                 alignment: Alignment.centerLeft,
@@ -233,14 +240,18 @@ class PostCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0,),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15.0,
+            ),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(time,
                   style: TextStyle(color: Colors.black54, fontSize: 14)),
             ),
           ),
-          SizedBox(height: 5,)
+          SizedBox(
+            height: 5,
+          )
         ],
       ),
     );

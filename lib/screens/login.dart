@@ -10,6 +10,7 @@ import 'package:social_media_app/config/colors.dart';
 import 'package:social_media_app/config/textStyles.dart';
 import 'package:social_media_app/index.dart';
 import 'package:social_media_app/providers/switchSplashProvider.dart';
+import 'package:social_media_app/screens/signup.dart';
 import 'package:social_media_app/services/firebase_auth.dart';
 import 'package:toast/toast.dart';
 
@@ -214,17 +215,20 @@ class LoginPage extends StatelessWidget {
                           ],
                         ),
                         SizedBox(height: 20),
-                        RichText(
-                            text: TextSpan(children: [
-                          TextSpan(
-                              text: "Don't have an account? ",
-                              style: TextStyle(color: Colors.grey[600])),
-                          TextSpan(
-                              text: "Sign Up.",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700))
-                        ])),
+                        InkWell(
+                          onTap: ()=>Navigator.push(context, CupertinoPageRoute(builder: (context)=>SignUp())),
+                          child: RichText(
+                              text: TextSpan(children: [
+                            TextSpan(
+                                text: "Don't have an account? ",
+                                style: TextStyle(color: Colors.grey[600])),
+                            TextSpan(
+                                text: "Sign Up.",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w700))
+                          ])),
+                        ),
                         SizedBox(
                           height: 30,
                         ),

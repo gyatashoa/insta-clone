@@ -1,16 +1,55 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:social_media_app/config/colors.dart';
+import 'package:social_media_app/databases/cloud_firestore_services.dart';
+import 'package:social_media_app/databases/tempData.dart';
+import 'package:social_media_app/index.dart';
+import 'package:social_media_app/model/userInfo.dart';
+import 'package:social_media_app/providers/profile_provider.dart';
+import 'package:social_media_app/screens/login.dart';
+import 'package:social_media_app/screens/splash.dart';
+import 'package:social_media_app/services/firebase_auth.dart';
 
 class ProfileScreen extends StatelessWidget {
-  String _name = "MR LORD AMOAKO";
   String accountType = "Personal Blog";
+
   String bio = "Fuck class we all clay!";
+
+  Firestore _firestore = Firestore.instance;
+
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<DocumentSnapshot>(
+        stream: _firestore
+            .collection('userProfile')
+            .document(TempData.firebaseUser.uid)
+            .snapshots(includeMetadataChanges: true),
+        builder: (context, snapshot) {
+          if (snapshot.data == null) {
+            print("null");
+          }
+          if (snapshot.hasData) {
+            return _buildUI(UserProfile.fromMap(snapshot.data.data));
+          }
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
+  }
+
+  Widget _buildUI(UserProfile userProfile) {
+    // print(userProfile.name);
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          ProfileScreenAppBar(username: userProfile.username),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
@@ -25,27 +64,27 @@ class ProfileScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     _buildUserStory(),
-                    _buildUserParticulars("Posts", 0),
-                    _buildUserParticulars("Followers", 5998),
-                    _buildUserParticulars("Following", 90)
+                    _buildUserParticulars("Posts", userProfile.post),
+                    _buildUserParticulars("Followers", userProfile.followers),
+                    _buildUserParticulars("Following", userProfile.following)
                   ],
                 ),
                 SizedBox(
                   height: 20,
                 ),
                 Text(
-                  _name,
+                  userProfile.name,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 Text(
-                  accountType,
+                  userProfile.accountType,
                   style: TextStyle(color: Colors.black38, fontSize: 15),
                 ),
                 Text(
-                  bio,
+                  userProfile.bio,
                   style: TextStyle(fontSize: 15),
                 ),
                 SizedBox(height: 10),
@@ -127,16 +166,41 @@ class ProfileScreen extends StatelessWidget {
 }
 
 class ProfileScreenAppBar extends StatelessWidget {
-  String userName = "Christian_todd";
+  ProfileScreenAppBar({this.username});
+  final String username;
+  void _onPressed(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Are your sure you want to log out?"),
+        actions: <Widget>[
+          FlatButton(
+              onPressed: () async {
+                await FirebaseAuthServices().logout().then((value) {
+                  Navigator.pushReplacement(context,
+                      CupertinoPageRoute(builder: (context) => LoginPage()));
+                });
+              },
+              child: Text("Yes")),
+          FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("No"))
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: MAIN_APP_COLOR,
-      title: Text(userName),
+      title: Text(username),
       actions: <Widget>[
         IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.menu),
+          onPressed: () => _onPressed(context),
+          icon: Icon(Icons.adjust),
         )
       ],
     );
@@ -174,16 +238,16 @@ class _LowerTabsState extends State<LowerTabs>
   Widget build(BuildContext context) {
     return Container(
       child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-      TabBar(
-        controller: _tabController,
-        tabs: _tabs,
-      ),
-      // Expanded(child: TabBarView(controller: _tabController, children: _tabView))
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          TabBar(
+            controller: _tabController,
+            tabs: _tabs,
+          ),
+          // Expanded(child: TabBarView(controller: _tabController, children: _tabView))
           // Container()
-          ],
-        ),
+        ],
+      ),
     );
   }
 
