@@ -8,6 +8,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:social_media_app/config/colors.dart';
 import 'package:social_media_app/config/textStyles.dart';
+import 'package:social_media_app/databases/tempData.dart';
 import 'package:social_media_app/index.dart';
 import 'package:social_media_app/providers/switchSplashProvider.dart';
 import 'package:social_media_app/screens/signup.dart';
@@ -134,7 +135,7 @@ class LoginPage extends StatelessWidget {
                                 color: Colors.blue,
                                 onPressed: () async {
                                   switchToHomeProvider.setIsLoading = true;
-                                  _login(ctx).then((value) {
+                                  _login(ctx).then((value)async {
                                     if (value == false) {
                                       switchToHomeProvider.setIsLoading = false;
                                     } else if (value == null) {
@@ -145,6 +146,7 @@ class LoginPage extends StatelessWidget {
                                           gravity: Toast.BOTTOM);
                                     } else {
                                       switchToHomeProvider.setIsLoading = false;
+                                      await TempData().getUser();
                                       Navigator.pushReplacement(
                                           context,
                                           CupertinoPageRoute(
@@ -216,7 +218,10 @@ class LoginPage extends StatelessWidget {
                         ),
                         SizedBox(height: 20),
                         InkWell(
-                          onTap: ()=>Navigator.push(context, CupertinoPageRoute(builder: (context)=>SignUp())),
+                          onTap: () => Navigator.pushReplacement(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => SignUp())),
                           child: RichText(
                               text: TextSpan(children: [
                             TextSpan(

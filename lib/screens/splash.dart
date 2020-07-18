@@ -29,6 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void _navigate() async {
     var tempData = TempData();
     await tempData.getUser();
+    // print(TempData.firebaseUser.uid);
     TempData.firebaseUser != null
         ? Navigator.pushReplacement(context,
             CupertinoPageRoute(builder: (context) => MyHomePage(user: _user)))

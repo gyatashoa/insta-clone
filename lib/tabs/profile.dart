@@ -21,6 +21,9 @@ class ProfileScreen extends StatelessWidget {
 
   Firestore _firestore = Firestore.instance;
 
+  final bool isOtherProfile;
+
+  ProfileScreen({Key key, this.isOtherProfile}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
@@ -33,7 +36,8 @@ class ProfileScreen extends StatelessWidget {
             print("null");
           }
           if (snapshot.hasData) {
-            return _buildUI(UserProfile.fromMap(snapshot.data.data));
+            return buildUI(UserProfile.fromMap(snapshot.data.data),
+                isOtherProfile: false);
           }
           if (!snapshot.hasData) {
             return Center(
@@ -43,13 +47,15 @@ class ProfileScreen extends StatelessWidget {
         });
   }
 
-  Widget _buildUI(UserProfile userProfile) {
+  Widget buildUI(UserProfile userProfile, {bool isOtherProfile}) {
+    // print(isOtherProfile);
     // print(userProfile.name);
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ProfileScreenAppBar(username: userProfile.username),
+          ProfileScreenAppBar(
+              username: userProfile.username, isOtherProfile: isOtherProfile),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
@@ -166,19 +172,21 @@ class ProfileScreen extends StatelessWidget {
 }
 
 class ProfileScreenAppBar extends StatelessWidget {
-  ProfileScreenAppBar({this.username});
+  ProfileScreenAppBar({this.username, this.isOtherProfile = false});
+  final bool isOtherProfile;
   final String username;
-  void _onPressed(BuildContext context) {
+  void _onPressed(BuildContext ctx) {
     showDialog(
-      context: context,
+      context: ctx,
       builder: (context) => AlertDialog(
         title: Text("Are your sure you want to log out?"),
         actions: <Widget>[
           FlatButton(
               onPressed: () async {
+                Navigator.canPop(context);
                 await FirebaseAuthServices().logout().then((value) {
                   Navigator.pushReplacement(context,
-                      CupertinoPageRoute(builder: (context) => LoginPage()));
+                      MaterialPageRoute(builder: (context) => LoginPage()));
                 });
               },
               child: Text("Yes")),
@@ -194,14 +202,17 @@ class ProfileScreenAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print(TempData.firebaseUser.uid);
     return AppBar(
       backgroundColor: MAIN_APP_COLOR,
       title: Text(username),
       actions: <Widget>[
-        IconButton(
-          onPressed: () => _onPressed(context),
-          icon: Icon(Icons.adjust),
-        )
+        isOtherProfile
+            ? SizedBox()
+            : IconButton(
+                onPressed: () => _onPressed(context),
+                icon: Icon(Icons.adjust),
+              )
       ],
     );
   }

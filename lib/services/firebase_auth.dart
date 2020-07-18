@@ -19,4 +19,11 @@ class FirebaseAuthServices {
   Future<void> logout() async {
     await _auth.signOut().catchError((err) => print(err));
   }
+
+  Future<FirebaseUser> signUp({String email, String password}) async {
+    AuthResult res = await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
+    FirebaseUser user = res.user;
+    return user;
+  }
 }

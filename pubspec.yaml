@@ -33,6 +33,7 @@ dependencies:
   firebase_auth: any
   cloud_firestore: ^0.13.7
   toast: any
+  email_validator: '^1.0.0'
 
 dev_dependencies:
   flutter_test:
